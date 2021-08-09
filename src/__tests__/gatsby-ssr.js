@@ -77,12 +77,28 @@ describe('gatsby-plugin-google-analytics', () => {
           expect(result).toMatch(/requireConsent/)
         })
 
+        it('sets requireCookieConsent', () => {
+          const { setPostBodyComponents } = setup({
+            requireCookieConsent: true
+          })
+          const result = JSON.stringify(setPostBodyComponents.mock.calls[0][0])
+          expect(result).toMatch(/requireCookieConsent/)
+        })
+
         it('sets disableCookies', () => {
           const { setPostBodyComponents } = setup({
             disableCookies: true
           })
           const result = JSON.stringify(setPostBodyComponents.mock.calls[0][0])
           expect(result).toMatch(/disableCookies/)
+        })
+
+        it('sets enableJSErrorTracking', () => {
+          const { setPostBodyComponents } = setup({
+            enableJSErrorTracking: true
+          })
+          const result = JSON.stringify(setPostBodyComponents.mock.calls[0][0])
+          expect(result).toMatch(/enableJSErrorTracking/)
         })
 
         it('sets localScript', () => {
