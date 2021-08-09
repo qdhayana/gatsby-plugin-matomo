@@ -22,7 +22,7 @@ export const onRouteUpdate = ({ location, prevLocation }, pluginOptions) => {
       prevLocation &&
       prevLocation.pathname + prevLocation.search + prevLocation.hash
 
-    const { trackLoad = true } = pluginOptions
+    const { trackLoad = true, trackPageView = true } = pluginOptions
 
     // document.title workaround stolen from:
     // https://github.com/gatsbyjs/gatsby/blob/master/packages/gatsby-plugin-google-analytics/src/gatsby-browser.js
@@ -41,9 +41,12 @@ export const onRouteUpdate = ({ location, prevLocation }, pluginOptions) => {
       }
     }
 
-    // Minimum delay for reactHelmet's requestAnimationFrame
-    const delay = Math.max(32, 0)
-    setTimeout(sendPageView, delay)
+    // simulate 2 RAF calls
+    if(trackPageView){
+      const delay = Math.max(32, 0)
+      setTimeout(sendPageView, delay)
+    }
+    
 
     if (first) {
       first = false
