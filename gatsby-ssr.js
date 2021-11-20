@@ -37,11 +37,6 @@ function buildTrackingCode(pluginOptions) {
       window._paq.push(['enableHeartBeatTimer']);
       window.start = new Date();
 
-      (function() {
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src='${script}'; s.parentNode.insertBefore(g,s);
-      })();
-
       if (window.dev === true) {
         console.debug('[Matomo] Tracking initialized')
         console.debug('[Matomo] matomoUrl: ${matomoUrl}, siteId: ${siteId}')
@@ -50,10 +45,13 @@ function buildTrackingCode(pluginOptions) {
   `
 
   return (
-    <script
-      key="script-gatsby-plugin-matomo"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      <script
+        key="script-gatsby-plugin-matomo"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      <script type="text/javascript" src={matomoUrl + "/matomo.js"}></script>
+    </>
   )
 }
 
