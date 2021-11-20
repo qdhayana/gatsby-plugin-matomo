@@ -105,8 +105,7 @@ export const onRenderBody = (
     (isProduction || (pluginOptions && pluginOptions.dev === true)) &&
     !isPathExcluded
   ) {
-    setHeadComponents([buildHead(pluginOptions)])
-    setPostBodyComponents([
+    setHeadComponents([buildHead(pluginOptions),
       buildTrackingCode(pluginOptions),
       buildTrackingCodeNoJs(pluginOptions, pathname)
     ])
