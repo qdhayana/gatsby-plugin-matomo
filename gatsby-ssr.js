@@ -38,7 +38,7 @@ function buildTrackingCode(pluginOptions) {
       window._paq.push(['enableHeartBeatTimer']);
       window.start = new Date();
 
-      if (asyncLoading) {
+      if (${asyncLoading}) {
         (function() {
           var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
           g.type='text/javascript'; g.async=true; g.defer=true; g.src='${script}'; s.parentNode.insertBefore(g,s);
