@@ -12,7 +12,8 @@ function buildTrackingCode(pluginOptions) {
     requireConsent,
     disableCookies,
     cookieDomain,
-    respectDnt = true
+    respectDnt = true,
+    asyncLoading = true
   } = pluginOptions
 
   const script = localScript ? localScript : `${matomoUrl}/${matomoJsScript}`
@@ -37,10 +38,12 @@ function buildTrackingCode(pluginOptions) {
       window._paq.push(['enableHeartBeatTimer']);
       window.start = new Date();
 
-      (function() {
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src='${script}'; s.parentNode.insertBefore(g,s);
-      })();
+      if (asyncLoading) {
+        (function() {
+          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+          g.type='text/javascript'; g.async=true; g.defer=true; g.src='${script}'; s.parentNode.insertBefore(g,s);
+        })();
+      }
 
       if (window.dev === true) {
         console.debug('[Matomo] Tracking initialized')
@@ -50,10 +53,15 @@ function buildTrackingCode(pluginOptions) {
   `
 
   return (
-    <script
-      key="script-gatsby-plugin-matomo"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+    <>
+      <script
+        key="script-gatsby-plugin-matomo"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+      {!asyncLoading && (
+        <script type="text/javascript" src={matomoUrl + '/matomo.js'}></script>
+      )}
+    </>
   )
 }
 
@@ -105,10 +113,18 @@ export const onRenderBody = (
     (isProduction || (pluginOptions && pluginOptions.dev === true)) &&
     !isPathExcluded
   ) {
-    setHeadComponents([buildHead(pluginOptions)])
-    setPostBodyComponents([
-      buildTrackingCode(pluginOptions),
-      buildTrackingCodeNoJs(pluginOptions, pathname)
-    ])
+    if (pluginOptions.scriptLocation === 'head') {
+      setHeadComponents([
+        buildHead(pluginOptions),
+        buildTrackingCode(pluginOptions),
+        buildTrackingCodeNoJs(pluginOptions, pathname)
+      ])
+    } else {
+      setHeadComponents([buildHead(pluginOptions)])
+      setPostBodyComponents([
+        buildTrackingCode(pluginOptions),
+        buildTrackingCodeNoJs(pluginOptions, pathname)
+      ])
+    }
   }
 }
